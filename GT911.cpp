@@ -55,7 +55,7 @@ void GT911::reset() {
 }
 
 void GT911::i2cStart(uint16_t reg) {
-	_wire->beginTransmission(_addr);
+  _wire->beginTransmission(_addr);
   _wire->write(reg >> 8);
   _wire->write(reg & 0xFF);
 }
@@ -77,7 +77,7 @@ uint8_t GT911::read(uint16_t reg) {
 }
 
 bool GT911::writeBytes(uint16_t reg, uint8_t *data, uint16_t size) {
-	i2cStart(reg);
+  i2cStart(reg);
   for (uint16_t i = 0; i < size; i++) {
       _wire->write(data[i]);
   }
@@ -85,7 +85,7 @@ bool GT911::writeBytes(uint16_t reg, uint8_t *data, uint16_t size) {
 }
 
 bool GT911::readBytes(uint16_t reg, uint8_t *data, uint16_t size) {
-	i2cStart(reg);
+  i2cStart(reg);
   _wire->endTransmission();
 
   uint16_t index = 0;
