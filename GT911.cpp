@@ -116,7 +116,7 @@ uint8_t GT911::readChecksum() {
 
 int8_t GT911::readTouches() {
   uint8_t flag = read(GT911_REG_COORD_ADDR);
-  if ((flag & 0x80) || ((flag & 0x0F) < 6)) {
+  if ((flag & 0x80) && ((flag & 0x0F) < 6)) {
     write(GT911_REG_COORD_ADDR, 0);
   }
   return flag & 0x0F;
