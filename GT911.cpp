@@ -115,11 +115,17 @@ uint8_t GT911::readChecksum() {
 }
 
 int8_t GT911::readTouches() {
-  uint8_t flag = read(GT911_REG_COORD_ADDR);
-  if ((flag & 0x80) && ((flag & 0x0F) < 6)) {
-    write(GT911_REG_COORD_ADDR, 0);
-  }
-  return flag & 0x0F;
+  uint32_t timeout = millis() + 20;
+  do {
+    uint8_t flag = read(GT911_REG_COORD_ADDR);
+    if ((flag & 0x80) && ((flag & 0x0F) < GT911_MAX_CONTACTS)) {
+      write(GT911_REG_COORD_ADDR, 0);
+      return flag & 0x0F;
+    }
+    delay(1);
+  } while (millis() < timeout);
+
+  return 0;
 }
 
 bool GT911::readTouchPoints() {
