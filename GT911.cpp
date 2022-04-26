@@ -63,7 +63,7 @@ void GT911::i2cStart(uint16_t reg) {
 bool GT911::write(uint16_t reg, uint8_t data) {
   i2cStart(reg);
   _wire->write(data);
-  return _wire->endTransmission() == I2C_ERROR_OK;
+  return _wire->endTransmission() == 0;
 }
 
 uint8_t GT911::read(uint16_t reg) {
@@ -81,7 +81,7 @@ bool GT911::writeBytes(uint16_t reg, uint8_t *data, uint16_t size) {
   for (uint16_t i = 0; i < size; i++) {
       _wire->write(data[i]);
   }
-  return _wire->endTransmission() == I2C_ERROR_OK;
+  return _wire->endTransmission() == 0;
 }
 
 bool GT911::readBytes(uint16_t reg, uint8_t *data, uint16_t size) {
@@ -151,7 +151,7 @@ bool GT911::begin(int8_t intPin, int8_t rstPin, uint8_t addr, uint32_t clk) {
   _wire->setClock(clk);
   _wire->begin();
   _wire->beginTransmission(_addr);
-  return _wire->endTransmission() == I2C_ERROR_OK;
+  return _wire->endTransmission() == 0;
 }
 
 bool GT911::productID(uint8_t *buf, uint8_t len) {
