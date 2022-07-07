@@ -98,7 +98,7 @@ bool GT911::readBytes(uint16_t reg, uint8_t *data, uint16_t size) {
     index++;
   }
 
-  return size == index;
+  return size == index - 1;
 }
 
 uint8_t GT911::calcChecksum(uint8_t *buf, uint8_t len) {
@@ -129,7 +129,18 @@ int8_t GT911::readTouches() {
 }
 
 bool GT911::readTouchPoints() {
-  return readBytes(GT911_REG_COORD_ADDR + 1, (uint8_t*)_points, sizeof(GTPoint) * GT911_MAX_CONTACTS);
+  bool result = readBytes(GT911_REG_COORD_ADDR + 1, (uint8_t*)_points, sizeof(GTPoint) * GT911_MAX_CONTACTS);
+
+  if (result && _rotation != Rotate::_0) {
+    for (uint8_t i = 0; i < GT911_MAX_CONTACTS; i++) {
+      if (_rotation == Rotate::_180) {
+        _points[i].x = _info.xResolution - _points[i].x;
+        _points[i].y = _info.yResolution - _points[i].y;
+      }
+    }
+  }
+
+  return result;
 }
 
 bool GT911::begin(int8_t intPin, int8_t rstPin, uint8_t addr, uint32_t clk) {
@@ -151,7 +162,11 @@ bool GT911::begin(int8_t intPin, int8_t rstPin, uint8_t addr, uint32_t clk) {
   _wire->setClock(clk);
   _wire->begin();
   _wire->beginTransmission(_addr);
-  return _wire->endTransmission() == 0;
+  if (_wire->endTransmission() == 0) {
+    readInfo(); // Need to get resolution to use rotation
+    return true;
+  }
+  return false;
 }
 
 bool GT911::productID(uint8_t *buf, uint8_t len) {
@@ -219,4 +234,8 @@ GTPoint GT911::getPoint(uint8_t num) {
 
 GTPoint *GT911::getPoints() {
   return _points;
+}
+
+void GT911::setRotation(Rotate rotation) {
+  _rotation = rotation;
 }

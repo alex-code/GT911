@@ -12,7 +12,7 @@
 
 #define GT911_MAX_CONTACTS 5
 
-#define GT911_REG_CFG  0x8047
+#define GT911_REG_CFG 0x8047
 #define GT911_REG_CHECKSUM 0x80FF
 #define GT911_REG_DATA 0x8140
 #define GT911_REG_ID 0x8140
@@ -24,6 +24,13 @@ enum : uint8_t {
 };
 
 class GT911 {
+  public:
+    enum class Rotate {
+      _0,
+      _90,
+      _180,
+      _270,
+    };
   private:
     TwoWire *_wire;
     uint8_t _intPin;
@@ -34,6 +41,8 @@ class GT911 {
     GTConfig _config;
     GTInfo _info;
     GTPoint _points[GT911_MAX_CONTACTS];
+
+    Rotate _rotation = Rotate::_0;
 
     void reset();
     void i2cStart(uint16_t reg);
@@ -57,6 +66,8 @@ class GT911 {
     uint8_t touched(uint8_t mode = GT911_MODE_INTERRUPT);
     GTPoint getPoint(uint8_t num);
     GTPoint *getPoints();
+
+    void setRotation(Rotate rotation);
 };
 
 #endif
