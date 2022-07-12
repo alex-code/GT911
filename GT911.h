@@ -33,8 +33,8 @@ class GT911 {
     };
   private:
     TwoWire *_wire;
-    uint8_t _intPin;
-    uint8_t _rstPin;
+    int8_t _intPin;
+    int8_t _rstPin;
     uint8_t _addr;
 
     bool _configLoaded = false;

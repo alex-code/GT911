@@ -79,7 +79,7 @@ uint8_t GT911::read(uint16_t reg) {
 bool GT911::writeBytes(uint16_t reg, uint8_t *data, uint16_t size) {
   i2cStart(reg);
   for (uint16_t i = 0; i < size; i++) {
-      _wire->write(data[i]);
+    _wire->write(data[i]);
   }
   return _wire->endTransmission() == 0;
 }
@@ -159,8 +159,8 @@ bool GT911::begin(int8_t intPin, int8_t rstPin, uint8_t addr, uint32_t clk) {
     attachInterrupt(_intPin, _gt911_irq_handler, FALLING);
   }
 
-  _wire->setClock(clk);
   _wire->begin();
+  _wire->setClock(clk);
   _wire->beginTransmission(_addr);
   if (_wire->endTransmission() == 0) {
     readInfo(); // Need to get resolution to use rotation
